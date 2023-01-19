@@ -1,7 +1,6 @@
 # Magazine-BE
 
-Node.js - TypeScript, Express, Prisma 2, PostgreSQL backend
-
+Node.js - TypeScript, Express, Graphql, MangoDB
 # Installation
 
 yarn install || npm install
