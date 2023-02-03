@@ -1,43 +1,31 @@
-import { ApolloServer } from "apollo-server-express";
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
-import Express from "express";
-import "reflect-metadata";
-import { buildSchema } from "type-graphql";
+import dotenv from "dotenv";
+dotenv.config();
+import express, { Application } from "express";
 import { connect } from "mongoose";
 
-import { UserResolver } from "./resolvers/User";
+import Server from "./index";
 
-const main = async () => {
-  const schema = await buildSchema({
-    resolvers: [UserResolver],
-    emitSchemaFile: true,
-    validate: false,
-  });
+const app: Application = express();
 
-  // create mongoose connection
+new Server(app);
+const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
+// create mongoose connection
+async () => {
   const mongoose = await connect(
     "mongodb+srv://Sarbin:sarbin@cluster0.iztcq.mongodb.net/?retryWrites=true&w=majority"
   );
   await mongoose.connection;
-
-  const server = new ApolloServer({
-    schema,
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground],
-  });
-
-  const app = Express();
-
-  await server.start();
-
-  server.applyMiddleware({ app });
-
-  app.listen({ port: 3333 }, () =>
-    console.log(
-      `🚀 Server ready and listening at ==> http://localhost:3333${server.graphqlPath}`
-    )
-  );
 };
 
-main().catch((error) => {
-  console.log(error, "error");
-});
+app
+  .listen(port, () =>
+    console.log(`🚀 Server ready and listening at ==> http://localhost:${port}`)
+  )
+  .on("error", (err: any) => {
+    if (err.code === "EADDRINUSE") {
+      console.log("server startup error: address already in use");
+    } else {
+      console.log(err);
+    }
+  });

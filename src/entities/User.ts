@@ -1,61 +1,47 @@
-import { ObjectType, Field, ID } from "type-graphql";
-import { prop as Property, getModelForClass } from "@typegoose/typegoose";
+import { prop, getModelForClass } from "@typegoose/typegoose";
 
 enum Role {
-  ADMIN,
-  AUTHER,
-  USER,
+  admin = "admin",
+  auther = "auther",
+  user = "user",
 }
 
-@ObjectType({ description: "The User model" })
 export class User {
-  [x: string]: any;
-  @Field(() => ID)
-  id: number;
+  @prop({ type: () => String, required: true, trim: true })
+  id?: string;
 
-  @Field()
-  @Property({ required: true })
-  firstName: String;
+  @prop({ type: () => String, required: true, trim: true })
+  firstName?: String;
 
-  @Field()
-  @Property({ required: true })
+  @prop({ type: () => String, required: true, trim: true })
   lastName: String;
 
-  @Field()
-  @Property({ required: false })
+  @prop({ type: () => String, required: false })
   mobile: String;
 
-  @Field()
-  @Property({ required: true, uniqu: true })
+  @prop({ type: () => String, required: true, uniqu: true })
   email: String;
 
-  @Field()
-  @Property({ required: true })
+  @prop({ type: () => String, required: true })
   password: String;
 
-  @Field()
-  @Property({ required: true })
+  @prop({ type: () => String, required: true })
   address: String;
 
-  @Field()
-  @Property({ enum: Role, default: Role.USER })
-  type: Role;
+  @prop({ type: () => String, enum: Object.values(Role), default: Role.user })
+  type: string;
 
-  @Field()
-  @Property({ default: false })
+  @prop({ type: () => Boolean, default: false })
   isActive: boolean;
 
-  @Field()
-  @Property({})
+  @prop({ type: () => Date, default: Date.now() })
   createdAt: Date;
 
-  @Field()
-  @Property({})
+  @prop({ type: () => Date })
   updateAt: Date;
 
-  @Field()
-  @Property({ required: true })
-  updateBy: String;
+  @prop({ type: () => String, required: true })
+  updateBy: string;
 }
 
 export const UserModel = getModelForClass(User);
